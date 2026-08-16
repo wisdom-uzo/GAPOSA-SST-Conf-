@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+
+{% block title %}Conference Sub-Themes & Tracks | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Call for Papers & Sub-Themes
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            45 Comprehensive Sub-Themes
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Categorized across 8 specialized scientific, computational, engineering, and industrial policy tracks.
+        </p>
+
+        <!-- Search Bar -->
+        <div class="pt-6 max-w-xl mx-auto">
+            <div class="relative">
+                <i class="fa-solid fa-magnifying-glass absolute left-4 top-3.5 text-slate-400 text-sm"></i>
+                <input type="text" id="subtheme-search" placeholder="Type keywords (e.g. Artificial Intelligence, Nutrition, Biotechnology, Nanophysics...)" class="w-full pl-11 pr-4 py-3 rounded-2xl border-0 text-xs sm:text-sm focus:ring-4 focus:ring-emerald-500 text-slate-900 bg-white shadow-2xl">
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="space-y-12">
+        {% for track_name, track_list in tracks.items() %}
+        <div class="track-section bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-emerald-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-emerald-600/20">
+                        <i class="fa-solid fa-layer-group text-amber-300"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-lg sm:text-xl font-bold text-slate-900 font-heading">{{ track_name }}</h2>
+                        <span class="text-xs text-slate-500">{{ track_list|length }} Research Focus Areas</span>
+                    </div>
+                </div>
+                <a href="{{ url_for('submissions.submit') }}" class="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 px-4 py-2 rounded-xl border border-emerald-200 transition-colors">
+                    <i class="fa-solid fa-file-arrow-up"></i> Submit to Track
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {% for item in track_list %}
+                <div class="subtheme-item p-4 rounded-2xl bg-slate-50 hover:bg-emerald-50/50 border border-slate-100 hover:border-emerald-200 transition-all">
+                    <div class="flex items-start gap-3">
+                        <div class="w-6 h-6 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                            {{ loop.index }}
+                        </div>
+                        <div>
+                            <h3 class="text-xs sm:text-sm font-bold text-slate-800">{{ item.title }}</h3>
+                            <p class="text-[11px] text-slate-500 mt-1 leading-relaxed">{{ item.description }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

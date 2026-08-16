@@ -1,0 +1,37 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        <div class="space-y-3 mb-6 no-print">
+            {% for category, message in messages %}
+                <div class="flash-alert flex items-start gap-3 p-4 rounded-xl shadow-sm border transition-all duration-300
+                    {% if category == 'success' %}
+                        bg-emerald-50 text-emerald-900 border-emerald-200
+                    {% elif category in ['error', 'danger'] %}
+                        bg-rose-50 text-rose-900 border-rose-200
+                    {% elif category == 'warning' %}
+                        bg-amber-50 text-amber-900 border-amber-200
+                    {% else %}
+                        bg-blue-50 text-blue-900 border-blue-200
+                    {% endif %}
+                ">
+                    <div class="text-lg mt-0.5">
+                        {% if category == 'success' %}
+                            <i class="fa-solid fa-circle-check text-emerald-600"></i>
+                        {% elif category in ['error', 'danger'] %}
+                            <i class="fa-solid fa-circle-exclamation text-rose-600"></i>
+                        {% elif category == 'warning' %}
+                            <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                        {% else %}
+                            <i class="fa-solid fa-circle-info text-blue-600"></i>
+                        {% endif %}
+                    </div>
+                    <div class="flex-grow text-sm font-medium">
+                        {{ message }}
+                    </div>
+                    <button type="button" onclick="this.parentElement.remove()" class="text-slate-400 hover:text-slate-600 transition-colors">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endwith %}

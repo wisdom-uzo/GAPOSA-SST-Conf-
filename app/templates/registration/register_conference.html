@@ -1,0 +1,193 @@
+{% extends 'base.html' %}
+
+{% block title %}Conference Registration | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Participant Registration
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            Register for ICONFST’26
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Choose your participation category (Physical or Virtual). Tiered discounts applied automatically.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+        
+        <!-- Registration Form (2 cols) -->
+        <div class="lg:col-span-2 bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-xl space-y-6">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900 font-heading">Delegate Registration Form</h2>
+                <p class="text-xs text-slate-500 mt-1">Please provide accurate details for your conference badge and certification.</p>
+            </div>
+
+            <form action="{{ url_for('registration.register_conference') }}" method="POST" class="space-y-6">
+                
+                <!-- Category & Mode Selection -->
+                <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200 space-y-4">
+                    <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider block">1. Participation Category</span>
+                    
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Registration Category <span class="text-rose-500">*</span></label>
+                            <select name="category" id="reg_category" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white font-medium">
+                                <option value="local_scholar" data-amount="20000" data-currency="NGN" data-symbol="₦" data-desc="Tiered pricing for Nigerian Scholars & Academics" {% if active_tier_key.startswith('local_scholar') %}selected{% endif %}>
+                                    Scholars / Local (Tiered by Date)
+                                </option>
+                                <option value="student" data-amount="5000" data-currency="NGN" data-symbol="₦" data-desc="Valid Student ID required at accreditation">
+                                    Students (₦5,000)
+                                </option>
+                                <option value="international_scholar" data-amount="20" data-currency="USD" data-symbol="$" data-desc="For International participants from overseas">
+                                    International Scholars ($20)
+                                </option>
+                                <option value="virtual_local" data-amount="20000" data-currency="NGN" data-symbol="₦" data-desc="Full virtual broadcast & digital certificate">
+                                    Virtual Participation (Local) (₦20,000)
+                                </option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Attendance Mode <span class="text-rose-500">*</span></label>
+                            <select name="mode" required class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-white font-medium">
+                                <option value="Physical" selected>Physical Attendance (Prince Dapo Abiodun Hall)</option>
+                                <option value="Virtual">Virtual Attendance (Online Streaming)</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Personal Information -->
+                <div class="space-y-4">
+                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider block">2. Personal Information</span>
+
+                    <div class="grid grid-cols-4 gap-3">
+                        <div class="col-span-1">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Title</label>
+                            <select name="title" class="w-full px-3 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                                <option value="Prof." {% if user and user.title == 'Prof.' %}selected{% endif %}>Prof.</option>
+                                <option value="Dr." {% if user and user.title == 'Dr.' %}selected{% endif %}>Dr.</option>
+                                <option value="Engr." {% if user and user.title == 'Engr.' %}selected{% endif %}>Engr.</option>
+                                <option value="Mr." {% if not user or user.title == 'Mr.' %}selected{% endif %}>Mr.</option>
+                                <option value="Mrs." {% if user and user.title == 'Mrs.' %}selected{% endif %}>Mrs.</option>
+                                <option value="Ms." {% if user and user.title == 'Ms.' %}selected{% endif %}>Ms.</option>
+                            </select>
+                        </div>
+                        <div class="col-span-3">
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Full Name <span class="text-rose-500">*</span></label>
+                            <input type="text" name="full_name" required value="{{ user.full_name if user else '' }}" placeholder="Firstname Middlename Surname" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Email Address <span class="text-rose-500">*</span></label>
+                            <input type="email" name="email" required value="{{ user.email if user else '' }}" placeholder="yourname@domain.com" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number <span class="text-rose-500">*</span></label>
+                            <input type="tel" name="phone" required value="{{ user.phone if user else '' }}" placeholder="+234 800 000 0000" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Institutional Details -->
+                <div class="space-y-4">
+                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider block">3. Institutional Affiliation</span>
+
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Institution / Organization <span class="text-rose-500">*</span></label>
+                            <input type="text" name="affiliation" required value="{{ user.affiliation if user else '' }}" placeholder="e.g. The Gateway (ICT) Polytechnic Saapade" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-bold text-slate-700 mb-1">Department / Faculty</label>
+                            <input type="text" name="department" placeholder="e.g. Science Laboratory Technology" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Country</label>
+                        <input type="text" name="country" value="Nigeria" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Special Dietary / Accessibility Requirements (Optional)</label>
+                        <input type="text" name="special_requests" placeholder="e.g. Vegetarian, Wheelchair access..." class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                    </div>
+                </div>
+
+                <button type="submit" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-credit-card"></i>
+                    <span>Proceed to Payment & Confirmation</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Summary & Fee Card (1 col) -->
+        <div class="space-y-6">
+            
+            <!-- Live Fee Preview -->
+            <div class="bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-8 shadow-xl space-y-6 border border-slate-700">
+                <span class="text-xs uppercase font-extrabold text-amber-400 tracking-wider block">Registration Fee Summary</span>
+                
+                <div>
+                    <span class="text-xs text-slate-400">Total Payable Fee:</span>
+                    <div class="text-4xl font-black text-white font-heading mt-1" id="fee-display-amount">
+                        ₦20,000
+                    </div>
+                    <p class="text-xs text-emerald-400 mt-1" id="fee-display-desc">
+                        Tiered pricing for Nigerian Scholars & Academics
+                    </p>
+                </div>
+
+                <div class="pt-4 border-t border-slate-700 space-y-3 text-xs text-slate-300">
+                    <div class="flex items-center justify-between">
+                        <span>Currency:</span>
+                        <span class="font-bold text-white" id="fee-display-currency">NGN</span>
+                    </div>
+                    <div class="flex items-center justify-between">
+                        <span>Includes:</span>
+                        <span class="text-emerald-300 font-semibold">Access, Badge & Certificate</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Official Bank Account Card -->
+            <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+                <div class="flex items-center gap-2 text-xs font-bold text-amber-600 uppercase">
+                    <i class="fa-solid fa-building-columns"></i>
+                    <span>Official Bank Account</span>
+                </div>
+                
+                <div class="space-y-2 text-xs">
+                    <div>
+                        <span class="text-slate-400 block">Bank Name:</span>
+                        <strong class="text-slate-800">Zenith Bank PLC</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Account Name:</span>
+                        <strong class="text-slate-800">Gaposa SS&T Conference and Journal</strong>
+                    </div>
+                    <div>
+                        <span class="text-slate-400 block">Account Number:</span>
+                        <div class="flex items-center justify-between bg-slate-100 p-2 rounded-xl mt-1">
+                            <span class="font-mono text-emerald-700 font-extrabold text-sm tracking-wider">1226078857</span>
+                            <button onclick="copyText('1226078857', this)" class="text-slate-400 hover:text-slate-700" title="Copy">
+                                <i class="fa-regular fa-copy"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+{% endblock %}

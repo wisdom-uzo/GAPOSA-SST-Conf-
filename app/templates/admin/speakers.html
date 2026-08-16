@@ -1,0 +1,114 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Dignitaries & Speakers CMS | ICONFST’26 Admin{% endblock %}
+{% block page_title %}Dignitaries & Keynote Speakers CMS{% endblock %}
+{% block page_subtitle %}Manage conference leadership, keynote speakers, and profile bios{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Add / Edit Speaker Form -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+        <div class="border-b border-slate-100 pb-3">
+            <h2 class="text-sm font-bold text-slate-900 font-heading">Add / Update Dignitary</h2>
+            <p class="text-[11px] text-slate-500">Configure profile details for the public speakers gallery</p>
+        </div>
+
+        <form action="{{ url_for('admin.speakers') }}" method="POST" enctype="multipart/form-data" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Full Name with Title <span class="text-rose-500">*</span></label>
+                <input type="text" name="name" required placeholder="e.g. Dr. Sanni Kehinde Oseni" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Conference Designation / Role <span class="text-rose-500">*</span></label>
+                <input type="text" name="role" required placeholder="e.g. Chief Host & Rector" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Institution / Affiliation <span class="text-rose-500">*</span></label>
+                <input type="text" name="affiliation" required placeholder="e.g. The Gateway (ICT) Polytechnic Saapade" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Speaker Category / Tag</label>
+                <select name="category" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+                    <option value="Chief Host">Chief Host</option>
+                    <option value="Host">Host</option>
+                    <option value="Keynote Speaker">Keynote Speaker</option>
+                    <option value="Lead Presenter">Lead Paper Presenter</option>
+                    <option value="Chairman LoC">Chairman LoC</option>
+                    <option value="Guest Speaker">Guest Speaker</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Display Sort Order (1, 2, 3...)</label>
+                <input type="number" name="order" value="10" min="1" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Biography / Profile Summary</label>
+                <textarea name="bio" rows="3" placeholder="Brief academic background and achievements..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50"></textarea>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Portrait Photo</label>
+                <input type="file" name="photo" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-emerald-50 file:text-emerald-700 hover:file:bg-emerald-100">
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">
+                Save Dignitary Profile
+            </button>
+        </form>
+    </div>
+
+    <!-- Dignitaries Grid -->
+    <div class="lg:col-span-2 space-y-4">
+        <div class="flex items-center justify-between">
+            <h2 class="text-sm font-bold text-slate-900 font-heading">Current Dignitaries & Speakers ({{ speakers|length }})</h2>
+            <a href="{{ url_for('main.speakers') }}" target="_blank" class="text-xs text-emerald-600 hover:underline font-bold">
+                View Public Gallery <i class="fa-solid fa-arrow-up-right-from-square ml-1"></i>
+            </a>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {% for speaker in speakers %}
+            <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex flex-col justify-between space-y-3 relative group">
+                
+                <div class="flex items-start gap-4">
+                    <img src="{{ speaker.image_url or 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=300&auto=format&fit=crop&q=80' }}" alt="{{ speaker.name }}" class="w-16 h-16 rounded-2xl object-cover border border-slate-200 shrink-0">
+                    <div class="overflow-hidden">
+                        <span class="inline-block text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            {{ speaker.category }}
+                        </span>
+                        <h3 class="text-xs font-bold text-slate-900 mt-1 truncate">{{ speaker.name }}</h3>
+                        <p class="text-[11px] text-emerald-700 font-semibold truncate">{{ speaker.role }}</p>
+                        <p class="text-[10px] text-slate-400 truncate">{{ speaker.affiliation }}</p>
+                    </div>
+                </div>
+
+                {% if speaker.bio %}
+                <p class="text-[11px] text-slate-600 line-clamp-2">{{ speaker.bio }}</p>
+                {% endif %}
+
+                <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <span class="text-slate-400 font-mono">Order: {{ speaker.order }}</span>
+                    <form action="{{ url_for('admin.delete_speaker', speaker_id=speaker.id) }}" method="POST" onsubmit="return confirm('Remove this dignitary profile?');">
+                        <button type="submit" class="text-rose-600 hover:text-rose-800 font-bold p-1">
+                            <i class="fa-regular fa-trash-can mr-1"></i> Remove
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            {% else %}
+            <div class="col-span-2 py-12 text-center text-slate-400 bg-white rounded-3xl border border-slate-200">
+                No speakers found. Add a dignitary using the form.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}

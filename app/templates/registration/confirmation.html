@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+
+{% block title %}Registration Confirmed | {{ reg.id }}{% endblock %}
+
+{% block content %}
+<div class="min-h-[80vh] py-16 px-4 sm:px-6 lg:px-8 bg-slate-100 flex items-center justify-center">
+    <div class="max-w-xl w-full bg-white rounded-3xl p-8 sm:p-10 border border-slate-200 shadow-2xl space-y-6">
+        
+        <!-- Header status -->
+        <div class="text-center space-y-2">
+            <div class="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <span class="inline-block text-[11px] font-extrabold uppercase tracking-wider text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-200">
+                Registration Successful
+            </span>
+            <h1 class="text-2xl font-black text-slate-900 font-heading">
+                Welcome to ICONFST’26!
+            </h1>
+            <p class="text-xs text-slate-500">
+                Your delegate profile has been created in the conference management registry.
+            </p>
+        </div>
+
+        <!-- Virtual Badge Card -->
+        <div class="bg-gradient-to-br from-slate-900 via-slate-800 to-emerald-950 text-white rounded-2xl p-6 shadow-xl border border-slate-700 relative overflow-hidden space-y-4">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-700">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-atom text-amber-400"></i>
+                    <span class="font-bold text-xs tracking-wider uppercase font-heading">ICONFST’26 DELEGATE PASS</span>
+                </div>
+                <span class="text-[10px] font-bold bg-amber-400 text-slate-950 px-2 py-0.5 rounded uppercase">
+                    {{ reg.mode }}
+                </span>
+            </div>
+
+            <div>
+                <span class="text-[11px] text-slate-400 block">Delegate Name</span>
+                <h3 class="text-lg font-bold text-white font-heading">{{ reg.title }} {{ reg.full_name }}</h3>
+                <p class="text-xs text-emerald-300 font-medium">{{ reg.affiliation }}</p>
+            </div>
+
+            <div class="grid grid-cols-2 gap-2 pt-2 text-xs border-t border-slate-700">
+                <div>
+                    <span class="text-[10px] text-slate-400 block">Registration ID:</span>
+                    <strong class="font-mono text-amber-300">{{ reg.id }}</strong>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-400 block">Category:</span>
+                    <strong class="text-slate-200">{{ reg.category_name }}</strong>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-400 block">Fee:</span>
+                    <strong class="text-white">{{ (reg.fee_amount if reg.fee_amount is defined else reg.get('fee_amount', 0))|format_currency(reg.currency if reg.currency is defined else reg.get('currency', 'NGN')) }}</strong>
+                </div>
+                <div>
+                    <span class="text-[10px] text-slate-400 block">Payment:</span>
+                    <span class="inline-block font-bold text-[11px] px-2 py-0.5 rounded {{ reg.payment_status|status_badge_class }}">
+                        {{ reg.payment_status }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="flex flex-col sm:flex-row gap-3 pt-2">
+            <a href="{{ url_for('registration.slip', reg_id=reg.id) }}" target="_blank" class="flex-1 py-3 px-4 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs text-center transition-colors flex items-center justify-center gap-2">
+                <i class="fa-solid fa-print"></i>
+                <span>Print Official Slip</span>
+            </a>
+            {% if current_user %}
+            <a href="{{ url_for('user.dashboard') }}" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs text-center transition-colors flex items-center justify-center gap-2">
+                <i class="fa-solid fa-gauge-high"></i>
+                <span>My Dashboard</span>
+            </a>
+            {% else %}
+            <a href="{{ url_for('main.index') }}" class="flex-1 py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs text-center transition-colors flex items-center justify-center gap-2">
+                <i class="fa-solid fa-house"></i>
+                <span>Return to Home</span>
+            </a>
+            {% endif %}
+        </div>
+
+    </div>
+</div>
+{% endblock %}

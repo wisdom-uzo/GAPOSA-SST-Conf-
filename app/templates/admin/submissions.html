@@ -1,0 +1,140 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Manuscript Repository | ICONFST’26 Admin{% endblock %}
+{% block page_title %}Manuscript Repository & Peer Review{% endblock %}
+{% block page_subtitle %}Review submitted abstracts, download PDFs, evaluate scores, and issue decisions{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    
+    <!-- Filter & Search Controls -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        
+        <form method="GET" action="{{ url_for('admin.submissions') }}" class="flex flex-wrap items-center gap-3 w-full md:w-auto">
+            <!-- Status Filter -->
+            <select name="status" onchange="this.form.submit()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50 font-medium">
+                <option value="">All Review Statuses</option>
+                <option value="Submitted" {{ 'selected' if status == 'Submitted' }}>Submitted</option>
+                <option value="Under Review" {{ 'selected' if status == 'Under Review' }}>Under Review</option>
+                <option value="Accepted" {{ 'selected' if status == 'Accepted' }}>Accepted</option>
+                <option value="Revision Required" {{ 'selected' if status == 'Revision Required' }}>Revision Required</option>
+                <option value="Rejected" {{ 'selected' if status == 'Rejected' }}>Rejected</option>
+                <option value="Camera-ready" {{ 'selected' if status == 'Camera-ready' }}>Camera-ready</option>
+            </select>
+
+            <!-- Subtheme Filter -->
+            <select name="subtheme" onchange="this.form.submit()" class="px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50 font-medium max-w-xs truncate">
+                <option value="">All 45 Sub-Themes</option>
+                {% for st in subthemes %}
+                <option value="{{ st.title }}" {{ 'selected' if subtheme == st.title }}>{{ st.title }}</option>
+                {% endfor %}
+            </select>
+
+            {% if status or subtheme %}
+            <a href="{{ url_for('admin.submissions') }}" class="text-xs text-rose-600 hover:underline font-bold">
+                <i class="fa-solid fa-xmark mr-1"></i> Clear
+            </a>
+            {% endif %}
+        </form>
+
+        <div class="flex items-center gap-3 w-full md:w-auto justify-end">
+            <span class="text-xs text-slate-500 font-bold">Total: {{ submissions|length }} manuscripts</span>
+            <a href="{{ url_for('admin.export_csv', data_type='submissions') }}" class="py-2 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
+                <i class="fa-solid fa-file-csv"></i>
+                <span>Export CSV</span>
+            </a>
+        </div>
+
+    </div>
+
+    <!-- Submissions Data Table -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                    <tr>
+                        <th class="py-3.5 px-4">Paper ID & Date</th>
+                        <th class="py-3.5 px-4">Title & Corresponding Author</th>
+                        <th class="py-3.5 px-4">Thematic Track / Sub-Theme</th>
+                        <th class="py-3.5 px-4">Review Score</th>
+                        <th class="py-3.5 px-4">Status</th>
+                        <th class="py-3.5 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                    {% for sub in submissions %}
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <!-- ID & Date -->
+                        <td class="py-3.5 px-4">
+                            <span class="font-mono font-bold text-slate-900 block">{{ sub.id }}</span>
+                            <span class="text-[10px] text-slate-400">{{ sub.created_at|format_date }}</span>
+                        </td>
+
+                        <!-- Title & Author -->
+                        <td class="py-3.5 px-4">
+                            <p class="font-bold text-slate-900 leading-snug max-w-sm">{{ sub.title }}</p>
+                            <p class="text-[11px] text-slate-500 mt-0.5">
+                                <i class="fa-solid fa-user-pen mr-1 text-slate-400"></i>{{ sub.author_name }} ({{ sub.author_affiliation }})
+                            </p>
+                        </td>
+
+                        <!-- Sub-Theme -->
+                        <td class="py-3.5 px-4">
+                            <span class="text-slate-800 font-semibold truncate block max-w-xs">{{ sub.subtheme }}</span>
+                            {% if sub.keywords %}
+                            <div class="flex flex-wrap gap-1 mt-1">
+                                {% for kw in sub.keywords[:3] %}
+                                <span class="text-[9px] bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded">{{ kw }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                        </td>
+
+                        <!-- Review Score -->
+                        <td class="py-3.5 px-4">
+                            {% if sub.reviewer_score is not none %}
+                            <span class="text-xs font-bold px-2 py-1 rounded-lg {{ 'bg-emerald-100 text-emerald-800' if sub.reviewer_score >= 70 else ('bg-amber-100 text-amber-800' if sub.reviewer_score >= 50 else 'bg-rose-100 text-rose-800') }}">
+                                {{ sub.reviewer_score }}/100
+                            </span>
+                            {% else %}
+                            <span class="text-[10px] text-slate-400 italic">Not scored</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- Status Badge -->
+                        <td class="py-3.5 px-4">
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full {{ 'bg-emerald-100 text-emerald-800' if sub.status in ['Accepted', 'Camera-ready'] else ('bg-amber-100 text-amber-800' if sub.status == 'Under Review' else ('bg-rose-100 text-rose-800' if sub.status == 'Rejected' else 'bg-blue-100 text-blue-800')) }}">
+                                {{ sub.status }}
+                            </span>
+                        </td>
+
+                        <!-- Actions -->
+                        <td class="py-3.5 px-4 text-right space-x-2">
+                            {% if sub.paper_file_url %}
+                            <a href="{{ sub.paper_file_url }}" target="_blank" class="p-1.5 text-slate-600 hover:text-blue-700 font-bold rounded hover:bg-slate-100 inline-block" title="Download PDF Manuscript">
+                                <i class="fa-solid fa-file-pdf text-rose-600"></i>
+                            </a>
+                            {% endif %}
+                            <a href="{{ url_for('admin.review_submission', paper_id=sub.id) }}" class="py-1 px-3 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold text-[11px] inline-flex items-center gap-1">
+                                <i class="fa-solid fa-gavel text-[10px]"></i> Review
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-slate-400">
+                            <div class="w-12 h-12 mx-auto rounded-full bg-slate-100 flex items-center justify-center text-slate-400 text-xl mb-2">
+                                <i class="fa-solid fa-file-lines"></i>
+                            </div>
+                            <p class="font-semibold text-sm text-slate-600">No manuscripts found</p>
+                            <p class="text-xs text-slate-400 mt-1">Submitted papers will appear here for review and evaluation</p>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

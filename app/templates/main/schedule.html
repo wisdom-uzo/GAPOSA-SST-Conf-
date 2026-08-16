@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+
+{% block title %}Programme Schedule & Itinerary | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Conference Itinerary
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            Programme of Events
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Sunday, 23rd August to Wednesday, 26th August, 2026 at Prince Dapo Abiodun CON Leadership Hall.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="space-y-12">
+        {% for day in schedule %}
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+            
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-slate-100 gap-2">
+                <div>
+                    <span class="text-xs font-black uppercase tracking-wider text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full">
+                        {{ day.day_label }}
+                    </span>
+                    <h2 class="text-xl font-bold text-slate-900 font-heading mt-2">{{ day.date }}</h2>
+                </div>
+                <div class="text-xs text-slate-500 font-medium">
+                    <i class="fa-solid fa-clock mr-1 text-slate-400"></i> Full Day Sessions
+                </div>
+            </div>
+
+            <div class="space-y-4">
+                {% for event in day.events %}
+                <div class="p-4 rounded-2xl bg-slate-50 border border-slate-100 hover:border-emerald-200 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-[11px] font-bold px-2 py-0.5 rounded
+                                {% if event.type == 'Ceremony' %}bg-purple-100 text-purple-800
+                                {% elif event.type == 'Keynote' %}bg-amber-100 text-amber-900
+                                {% elif event.type == 'Parallel' %}bg-blue-100 text-blue-800
+                                {% elif event.type == 'Break' %}bg-teal-100 text-teal-800
+                                {% elif event.type == 'Dinner' %}bg-rose-100 text-rose-800
+                                {% else %}bg-slate-200 text-slate-800{% endif %}">
+                                {{ event.type }}
+                            </span>
+                            <span class="text-xs font-semibold text-slate-500">{{ event.time }}</span>
+                        </div>
+                        <h3 class="text-sm font-bold text-slate-900">{{ event.title }}</h3>
+                    </div>
+
+                    <div class="text-xs text-slate-600 sm:text-right shrink-0">
+                        <i class="fa-solid fa-location-dot text-emerald-600 mr-1"></i>
+                        <span>{{ event.location }}</span>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

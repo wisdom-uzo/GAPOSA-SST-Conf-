@@ -1,0 +1,296 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Executive Dashboard | ICONFST’26{% endblock %}
+{% block page_title %}Executive Dashboard{% endblock %}
+{% block page_subtitle %}Real-time secretariat analytics and operational management{% endblock %}
+
+{% block content %}
+<div class="space-y-8">
+    
+    <!-- =========================================================================
+         1. TOP KPI METRICS GRID
+         ========================================================================= -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        
+        <!-- Total Registrations Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-emerald-50 rounded-full blur-2xl -mr-6 -mt-6 group-hover:bg-emerald-100 transition-colors"></div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Registrations</span>
+                <div class="w-10 h-10 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                    <i class="fa-solid fa-users text-lg"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-3xl font-black text-slate-900 font-heading">{{ analytics.total_registrations }}</p>
+                <div class="flex items-center gap-3 mt-2 text-xs font-semibold">
+                    <span class="text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-lg border border-emerald-200">
+                        {{ analytics.confirmed_registrations }} Confirmed
+                    </span>
+                    <span class="text-amber-700 bg-amber-50 px-2 py-0.5 rounded-lg border border-amber-200">
+                        {{ analytics.pending_registrations }} Pending
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manuscripts Submitted Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-blue-50 rounded-full blur-2xl -mr-6 -mt-6 group-hover:bg-blue-100 transition-colors"></div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Manuscripts</span>
+                <div class="w-10 h-10 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center">
+                    <i class="fa-solid fa-file-lines text-lg"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-3xl font-black text-slate-900 font-heading">{{ analytics.total_submissions }}</p>
+                <div class="flex items-center gap-3 mt-2 text-xs font-semibold">
+                    <span class="text-blue-700 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-200">
+                        {{ analytics.accepted_submissions }} Accepted
+                    </span>
+                    <span class="text-slate-600 bg-slate-50 px-2 py-0.5 rounded-lg border border-slate-200">
+                        {{ analytics.under_review_submissions }} Under Review
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Confirmed Revenue (NGN) Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-amber-50 rounded-full blur-2xl -mr-6 -mt-6 group-hover:bg-amber-100 transition-colors"></div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Revenue (NGN)</span>
+                <div class="w-10 h-10 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center">
+                    <i class="fa-solid fa-money-bill-wave text-lg"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-3xl font-black text-slate-900 font-heading">₦{{ analytics.total_revenue_ngn|number_format }}</p>
+                <p class="text-[11px] text-slate-500 mt-2 font-medium">Verified local bank transfers</p>
+            </div>
+        </div>
+
+        <!-- Confirmed Revenue (USD) Card -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden group">
+            <div class="absolute top-0 right-0 w-24 h-24 bg-indigo-50 rounded-full blur-2xl -mr-6 -mt-6 group-hover:bg-indigo-100 transition-colors"></div>
+            <div class="flex items-center justify-between">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-500">Revenue (USD)</span>
+                <div class="w-10 h-10 rounded-2xl bg-indigo-100 text-indigo-700 flex items-center justify-center">
+                    <i class="fa-solid fa-earth-americas text-lg"></i>
+                </div>
+            </div>
+            <div class="mt-4">
+                <p class="text-3xl font-black text-slate-900 font-heading">${{ analytics.total_revenue_usd }}</p>
+                <p class="text-[11px] text-slate-500 mt-2 font-medium">International delegate passes</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =========================================================================
+         2. CONFERENCE BREAKDOWN CHARTS & MODALITY
+         ========================================================================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        
+        <!-- Attendance Modality -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 class="text-sm font-bold text-slate-900 font-heading">Participation Modality</h2>
+                <span class="text-xs text-slate-400">Physical vs Virtual</span>
+            </div>
+
+            <div class="space-y-4 pt-2">
+                <!-- Physical Progress -->
+                <div>
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-building-columns text-emerald-600"></i> Physical Attendance
+                        </span>
+                        <span>{{ analytics.physical_count }} delegates</span>
+                    </div>
+                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-emerald-500 rounded-full" style="width: {{ (analytics.physical_count / analytics.total_registrations * 100) if analytics.total_registrations > 0 else 0 }}%"></div>
+                    </div>
+                </div>
+
+                <!-- Virtual Progress -->
+                <div>
+                    <div class="flex items-center justify-between text-xs font-bold text-slate-700 mb-1">
+                        <span class="flex items-center gap-2">
+                            <i class="fa-solid fa-video text-blue-600"></i> Virtual Participation
+                        </span>
+                        <span>{{ analytics.virtual_count }} delegates</span>
+                    </div>
+                    <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden">
+                        <div class="h-full bg-blue-500 rounded-full" style="width: {{ (analytics.virtual_count / analytics.total_registrations * 100) if analytics.total_registrations > 0 else 0 }}%"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Quick Action Hub -->
+            <div class="pt-4 border-t border-slate-100 grid grid-cols-2 gap-2">
+                <a href="{{ url_for('admin.export_csv', data_type='registrations') }}" class="py-2.5 px-3 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-center text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-csv"></i> Export Regs
+                </a>
+                <a href="{{ url_for('admin.export_csv', data_type='submissions') }}" class="py-2.5 px-3 bg-blue-50 hover:bg-blue-100 text-blue-800 border border-blue-200 rounded-xl text-center text-xs font-bold transition-all flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-file-csv"></i> Export Papers
+                </a>
+            </div>
+        </div>
+
+        <!-- Editorial Review Acceptance Pipeline -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-4 lg:col-span-2">
+            <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+                <h2 class="text-sm font-bold text-slate-900 font-heading">Editorial & Review Status</h2>
+                <span class="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
+                    Acceptance Rate: {{ analytics.acceptance_rate }}%
+                </span>
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-200 text-center">
+                    <p class="text-xs text-slate-500 font-bold uppercase">Submitted</p>
+                    <p class="text-2xl font-black text-slate-800 font-heading mt-1">{{ analytics.submitted_submissions }}</p>
+                </div>
+                <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-center">
+                    <p class="text-xs text-amber-700 font-bold uppercase">Under Review</p>
+                    <p class="text-2xl font-black text-amber-900 font-heading mt-1">{{ analytics.under_review_submissions }}</p>
+                </div>
+                <div class="bg-emerald-50 p-4 rounded-2xl border border-emerald-200 text-center">
+                    <p class="text-xs text-emerald-700 font-bold uppercase">Accepted</p>
+                    <p class="text-2xl font-black text-emerald-900 font-heading mt-1">{{ analytics.accepted_submissions }}</p>
+                </div>
+                <div class="bg-rose-50 p-4 rounded-2xl border border-rose-200 text-center">
+                    <p class="text-xs text-rose-700 font-bold uppercase">Rejected</p>
+                    <p class="text-2xl font-black text-rose-900 font-heading mt-1">{{ analytics.rejected_submissions }}</p>
+                </div>
+            </div>
+
+            <div class="pt-2 flex items-center justify-between text-xs text-slate-500">
+                <span>Hard cutoff deadline: <strong class="text-slate-800">31st July, 2026</strong></span>
+                <a href="{{ url_for('admin.submissions') }}" class="text-emerald-600 hover:text-emerald-700 font-bold flex items-center gap-1">
+                    Open Review Manager <i class="fa-solid fa-arrow-right"></i>
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- =========================================================================
+         3. RECENT ACTIVITY TABLES
+         ========================================================================= -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        
+        <!-- Recent Registrations Card -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 font-heading">Recent Registrations</h3>
+                    <p class="text-xs text-slate-500">Latest delegate signups and passes</p>
+                </div>
+                <a href="{{ url_for('admin.registrations') }}" class="text-xs font-bold text-emerald-600 hover:text-emerald-700">
+                    View All ({{ analytics.total_registrations }})
+                </a>
+            </div>
+
+            <div class="flex-1 overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[10px]">
+                        <tr>
+                            <th class="py-3 px-4">Delegate</th>
+                            <th class="py-3 px-4">Category</th>
+                            <th class="py-3 px-4">Payment</th>
+                            <th class="py-3 px-4 text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for reg in recent_registrations %}
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-3 px-4">
+                                <p class="font-bold text-slate-900">{{ reg.title }} {{ reg.full_name }}</p>
+                                <p class="text-[11px] text-slate-500 truncate max-w-[160px]">{{ reg.affiliation }}</p>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-[10px] font-semibold px-2 py-0.5 rounded bg-slate-100 text-slate-700">
+                                    {{ reg.category_name or reg.category }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ 'bg-emerald-100 text-emerald-800' if reg.payment_status == 'Confirmed' else 'bg-amber-100 text-amber-800' }}">
+                                    {{ reg.payment_status }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                                <a href="{{ url_for('registration.slip', reg_id=reg.id) }}" target="_blank" class="text-slate-600 hover:text-emerald-700 font-bold p-1">
+                                    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="4" class="py-8 text-center text-slate-400">
+                                No delegate registrations yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Manuscripts Card -->
+        <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+            <div class="p-6 border-b border-slate-100 flex items-center justify-between">
+                <div>
+                    <h3 class="text-sm font-bold text-slate-900 font-heading">Recent Manuscripts</h3>
+                    <p class="text-xs text-slate-500">Submitted papers awaiting peer review</p>
+                </div>
+                <a href="{{ url_for('admin.submissions') }}" class="text-xs font-bold text-blue-600 hover:text-blue-700">
+                    View All ({{ analytics.total_submissions }})
+                </a>
+            </div>
+
+            <div class="flex-1 overflow-x-auto">
+                <table class="w-full text-left border-collapse text-xs">
+                    <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[10px]">
+                        <tr>
+                            <th class="py-3 px-4">Paper Title / Author</th>
+                            <th class="py-3 px-4">Status</th>
+                            <th class="py-3 px-4 text-right">Review</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-100">
+                        {% for sub in recent_submissions %}
+                        <tr class="hover:bg-slate-50 transition-colors">
+                            <td class="py-3 px-4">
+                                <p class="font-bold text-slate-900 truncate max-w-[220px]">{{ sub.title }}</p>
+                                <p class="text-[11px] text-slate-500">{{ sub.author_name }}</p>
+                            </td>
+                            <td class="py-3 px-4">
+                                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full {{ 'bg-emerald-100 text-emerald-800' if sub.status == 'Accepted' else ('bg-amber-100 text-amber-800' if sub.status == 'Under Review' else 'bg-blue-100 text-blue-800') }}">
+                                    {{ sub.status }}
+                                </span>
+                            </td>
+                            <td class="py-3 px-4 text-right">
+                                <a href="{{ url_for('admin.review_submission', paper_id=sub.id) }}" class="py-1 px-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-lg font-bold text-[11px] inline-flex items-center gap-1">
+                                    <i class="fa-solid fa-gavel text-[10px]"></i> Review
+                                </a>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="3" class="py-8 text-center text-slate-400">
+                                No manuscripts submitted yet.
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,178 @@
+{% extends 'base.html' %}
+
+{% block title %}User Dashboard | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+            <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+                Author & Participant Portal
+            </span>
+            <h1 class="text-2xl sm:text-4xl font-black font-heading tracking-tight mt-2">
+                Welcome, {{ user.title }} {{ user.full_name }}
+            </h1>
+            <p class="text-xs text-emerald-200 mt-1">
+                {{ user.affiliation }} &bull; {{ user.email }}
+            </p>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="{{ url_for('submissions.submit') }}" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl shadow-lg transition-all flex items-center gap-2">
+                <i class="fa-solid fa-file-arrow-up"></i> Submit New Paper
+            </a>
+            <a href="{{ url_for('registration.register_conference') }}" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs font-extrabold rounded-xl shadow-lg transition-all flex items-center gap-2">
+                <i class="fa-solid fa-ticket"></i> Register
+            </a>
+        </div>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-10">
+    
+    <!-- Quick Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-3 gap-6">
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">My Registrations</span>
+                <p class="text-3xl font-black text-slate-900 font-heading mt-1">{{ registrations|length }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-id-card"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">My Submissions</span>
+                <p class="text-3xl font-black text-slate-900 font-heading mt-1">{{ submissions|length }}</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-book-open"></i>
+            </div>
+        </div>
+
+        <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex items-center justify-between">
+            <div>
+                <span class="text-xs font-bold text-slate-400 uppercase">Account Status</span>
+                <p class="text-lg font-bold text-emerald-700 mt-1">Active Delegate</p>
+            </div>
+            <div class="w-12 h-12 rounded-2xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+        </div>
+    </div>
+
+    <!-- Submissions Management Table -->
+    <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 font-heading">My Research Submissions</h2>
+                <p class="text-xs text-slate-500">Track peer-review progression and upload camera-ready manuscripts.</p>
+            </div>
+            <a href="{{ url_for('user.my_submissions') }}" class="text-xs font-bold text-emerald-700 hover:underline">
+                View All Submissions
+            </a>
+        </div>
+
+        {% if submissions %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider">
+                        <th class="py-3 px-4 rounded-l-xl">Paper ID</th>
+                        <th class="py-3 px-4">Title</th>
+                        <th class="py-3 px-4">Sub-Theme</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4 rounded-r-xl text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for sub in submissions %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="py-3 px-4 font-mono font-bold text-slate-900">{{ sub.id }}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-800 max-w-xs truncate">{{ sub.title }}</td>
+                        <td class="py-3 px-4 text-slate-600 max-w-xs truncate">{{ sub.subtheme }}</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-bold border {{ sub.status|status_badge_class }}">
+                                {{ sub.status }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right space-x-2">
+                            <a href="{{ url_for('submissions.track_paper', paper_id=sub.id) }}" class="text-emerald-700 hover:underline font-semibold">Track</a>
+                            {% if sub.status in ['Accepted', 'Camera-ready'] %}
+                            <a href="{{ url_for('user.acceptance_letter', paper_id=sub.id) }}" class="text-blue-600 hover:underline font-semibold">Letter</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-2">
+            <p class="text-xs text-slate-500">You have not submitted any manuscripts yet.</p>
+            <a href="{{ url_for('submissions.submit') }}" class="inline-block text-xs font-bold text-emerald-700 hover:underline">
+                Submit your first paper now &rarr;
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Registrations Management Table -->
+    <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        <div class="flex items-center justify-between pb-4 border-b border-slate-100">
+            <div>
+                <h2 class="text-lg font-bold text-slate-900 font-heading">My Conference Registrations</h2>
+                <p class="text-xs text-slate-500">Check payment status and print conference passes.</p>
+            </div>
+            <a href="{{ url_for('user.my_registrations') }}" class="text-xs font-bold text-emerald-700 hover:underline">
+                View All
+            </a>
+        </div>
+
+        {% if registrations %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase tracking-wider">
+                        <th class="py-3 px-4 rounded-l-xl">Reg ID</th>
+                        <th class="py-3 px-4">Category</th>
+                        <th class="py-3 px-4">Mode</th>
+                        <th class="py-3 px-4">Fee Amount</th>
+                        <th class="py-3 px-4">Payment</th>
+                        <th class="py-3 px-4 rounded-r-xl text-right">Pass / Slip</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for reg in registrations %}
+                    <tr class="hover:bg-slate-50/80 transition-colors">
+                        <td class="py-3 px-4 font-mono font-bold text-slate-900">{{ reg.id }}</td>
+                        <td class="py-3 px-4 font-medium text-slate-800">{{ reg.category_name }}</td>
+                        <td class="py-3 px-4 uppercase font-bold text-slate-700">{{ reg.mode }}</td>
+                        <td class="py-3 px-4 font-bold text-slate-900">{{ reg.fee_amount|format_currency(reg.currency) }}</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-bold border {{ reg.payment_status|status_badge_class }}">
+                                {{ reg.payment_status }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right space-x-2">
+                            <a href="{{ url_for('registration.confirmation', reg_id=reg.id) }}" class="text-emerald-700 hover:underline font-semibold">Badge</a>
+                            <a href="{{ url_for('registration.slip', reg_id=reg.id) }}" target="_blank" class="text-slate-600 hover:text-slate-900 font-semibold">Slip</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200 space-y-2">
+            <p class="text-xs text-slate-500">No active conference registrations found.</p>
+            <a href="{{ url_for('registration.register_conference') }}" class="inline-block text-xs font-bold text-emerald-700 hover:underline">
+                Register as a delegate &rarr;
+            </a>
+        </div>
+        {% endif %}
+    </div>
+
+</div>
+{% endblock %}

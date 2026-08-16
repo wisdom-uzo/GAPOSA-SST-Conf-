@@ -1,0 +1,145 @@
+{% extends 'base.html' %}
+
+{% block title %}Submit Abstract / Paper | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-14">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Author Submission Portal
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            Submit Abstract & Full Paper
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Submit your research for double-blind peer review. Deadline for abstract submission: <strong>31st July, 2026</strong>.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="bg-white rounded-3xl p-8 sm:p-12 border border-slate-200 shadow-2xl space-y-8">
+        
+        <!-- Guidelines Summary Accordion -->
+        <div class="p-4 rounded-2xl bg-amber-50 border border-amber-200 text-xs text-amber-900 space-y-2">
+            <div class="flex items-center gap-2 font-bold text-amber-800">
+                <i class="fa-solid fa-triangle-exclamation text-amber-600"></i>
+                <span>Mandatory Manuscript Guidelines</span>
+            </div>
+            <p class="text-[11px] leading-relaxed">
+                • <strong>Max length:</strong> 12 pages &nbsp;|&nbsp; 
+                • <strong>Spacing:</strong> 1.5 line spacing &nbsp;|&nbsp; 
+                • <strong>Font:</strong> 12pt Times New Roman &nbsp;|&nbsp; 
+                • <strong>Referencing:</strong> APA 7th Edition &nbsp;|&nbsp; 
+                • <strong>Abstract:</strong> Max 200 words with 3–5 keywords.
+            </p>
+        </div>
+
+        <form action="{{ url_for('submissions.submit') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
+            
+            <!-- Section 1: Title & Sub-theme -->
+            <div class="space-y-4">
+                <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider block">1. Research Classification</span>
+                
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Manuscript Title <span class="text-rose-500">*</span></label>
+                    <input type="text" name="title" required placeholder="e.g. Sustainable Biofuel Extraction Utilizing Local Agricultural Waste..." class="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50 font-medium">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Select Conference Sub-Theme <span class="text-rose-500">*</span></label>
+                    <select name="subtheme" required class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                        <option value="" disabled selected>-- Choose one of the 45 Sub-Themes --</option>
+                        {% for st in subthemes %}
+                        <option value="{{ st.title }}">[{{ st.track }}] {{ st.title }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <!-- Section 2: Authorship -->
+            <div class="space-y-4 pt-2">
+                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider block">2. Authorship & Corresponding Author</span>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Corresponding Author Name <span class="text-rose-500">*</span></label>
+                        <input type="text" name="author_name" required value="{{ user.full_name if user else '' }}" placeholder="Prof. / Dr. / Mr. Full Name" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Author Email Address <span class="text-rose-500">*</span></label>
+                        <input type="email" name="author_email" required value="{{ user.email if user else '' }}" placeholder="author@institution.edu.ng" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number <span class="text-rose-500">*</span></label>
+                        <input type="tel" name="author_phone" required value="{{ user.phone if user else '' }}" placeholder="+234 800 000 0000" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-slate-700 mb-1">Primary Affiliation / University <span class="text-rose-500">*</span></label>
+                        <input type="text" name="author_affiliation" required value="{{ user.affiliation if user else '' }}" placeholder="Department & Institution name" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Co-Authors (Names & Affiliations, comma separated)</label>
+                    <input type="text" name="co_authors" placeholder="e.g. Dr. Jane Smith (FUNAAB), Engr. K. Balogun (UNILAG)" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                </div>
+            </div>
+
+            <!-- Section 3: Abstract & Keywords -->
+            <div class="space-y-4 pt-2">
+                <div class="flex items-center justify-between">
+                    <span class="text-xs font-bold text-slate-800 uppercase tracking-wider">3. Abstract & Keywords</span>
+                    <span class="text-xs text-slate-500">
+                        Word Count: <strong id="word-count-display" class="text-emerald-600">0</strong> / 200 words max
+                    </span>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Abstract Text <span class="text-rose-500">*</span></label>
+                    <textarea name="abstract_text" id="abstract_text" rows="6" required placeholder="Provide a concise summary of the research background, problem statement, methodology, results, and practical significance (Maximum 200 words)..." class="w-full px-4 py-3 rounded-xl border border-slate-300 text-xs sm:text-sm focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50 leading-relaxed"></textarea>
+                    <p id="word-count-warning" class="hidden text-[11px] text-rose-600 font-bold mt-1">
+                        <i class="fa-solid fa-circle-exclamation mr-1"></i> Warning: Abstract exceeds 200 words limit. Please shorten your abstract.
+                    </p>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Keywords (3 to 5 keywords, comma separated) <span class="text-rose-500">*</span></label>
+                    <input type="text" name="keywords" required placeholder="e.g. Machine Learning, Crop Yield, Precision Agriculture, Neural Networks" class="w-full px-4 py-2.5 rounded-xl border border-slate-300 text-xs focus:ring-2 focus:ring-emerald-500 focus:outline-none bg-slate-50">
+                </div>
+            </div>
+
+            <!-- Section 4: File Upload -->
+            <div class="space-y-4 pt-2">
+                <span class="text-xs font-bold text-slate-800 uppercase tracking-wider block">4. Full Paper / Manuscript Upload</span>
+
+                <div class="p-6 rounded-2xl bg-slate-50 border-2 border-dashed border-slate-300 hover:border-emerald-500 transition-colors text-center space-y-3">
+                    <div class="w-12 h-12 mx-auto rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl">
+                        <i class="fa-solid fa-cloud-arrow-up"></i>
+                    </div>
+                    <div>
+                        <label class="cursor-pointer">
+                            <span class="text-xs font-bold text-emerald-700 hover:underline">Choose PDF Manuscript File</span>
+                            <input type="file" name="paper_file" accept=".pdf,.doc,.docx" class="hidden" onchange="document.getElementById('file-chosen-label').textContent = this.files[0] ? this.files[0].name : 'No file chosen';">
+                        </label>
+                        <p id="file-chosen-label" class="text-xs text-slate-500 mt-1 font-mono">No file chosen (PDF format strongly recommended, max 12 pages / 16MB)</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Submit Button -->
+            <div class="pt-4">
+                <button type="submit" class="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-extrabold text-sm shadow-xl shadow-emerald-600/30 transition-all transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Submit Abstract & Paper</span>
+                </button>
+            </div>
+
+        </form>
+
+    </div>
+</div>
+{% endblock %}

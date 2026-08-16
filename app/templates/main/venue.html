@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Venue & Accommodation Guide | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Location & Logistics
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            Conference Venue & Accommodation
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Prince Dapo Abiodun CON Leadership Hall, The Gateway (ICT) Polytechnic, Saapade, Ogun State.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+    
+    <!-- Venue Card -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+        <div class="space-y-6">
+            <span class="text-xs font-bold text-emerald-700 uppercase tracking-wider">Primary Location</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">
+                Prince Dapo Abiodun CON Leadership Hall
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+                The flagship auditorium at The Gateway (ICT) Polytechnic Saapade is equipped with world-class audio-visual presentation technology, high-speed campus wireless connectivity, tiered plenary seating, and dedicated breakout rooms.
+            </p>
+
+            <div class="space-y-3 text-xs text-slate-700">
+                <div class="flex items-start gap-3 p-3.5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <i class="fa-solid fa-map-pin text-emerald-600 text-base mt-0.5"></i>
+                    <div>
+                        <strong>Full Address:</strong><br>
+                        Prince Dapo Abiodun CON Leadership Hall, The Gateway (ICT) Polytechnic Campus, Saapade, Ogun State, Nigeria.
+                    </div>
+                </div>
+                <div class="flex items-start gap-3 p-3.5 bg-white rounded-2xl border border-slate-200 shadow-sm">
+                    <i class="fa-solid fa-plane-arrival text-blue-600 text-base mt-0.5"></i>
+                    <div>
+                        <strong>Airport Transit:</strong><br>
+                        Murtala Muhammed International Airport (LOS), Lagos — approximately 60–75 minutes drive along the Lagos-Ibadan Expressway corridor.
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+            <img src="https://images.unsplash.com/photo-1517457373958-b7bdd4587205?w=800&auto=format&fit=crop&q=80" alt="Auditorium" class="w-full h-80 object-cover">
+            <div class="absolute inset-0 bg-gradient-to-t from-slate-950/80 via-transparent to-transparent"></div>
+            <div class="absolute bottom-6 left-6 right-6 text-white">
+                <span class="text-xs bg-emerald-600 px-2.5 py-1 rounded font-bold uppercase">Modern Facility</span>
+                <h3 class="text-lg font-bold mt-2">Plenary Hall & Exhibition Center</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Recommended Hotels -->
+    <div class="space-y-6">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+            <span class="text-xs font-bold text-amber-600 uppercase tracking-wider">Accommodation</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading">Recommended Partner Hotels</h2>
+            <p class="text-xs text-slate-500">
+                Special conference discounts are available for registered delegates. Mention "ICONFST’26 Delegate" upon booking.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3">
+                <span class="text-[10px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded uppercase">Campus Vicinity</span>
+                <h3 class="text-base font-bold text-slate-900">GAPOSA Guest House</h3>
+                <p class="text-xs text-slate-500">The Gateway Polytechnic Campus, Saapade</p>
+                <div class="text-xs font-bold text-slate-800 pt-2">From ₦12,000 / night</div>
+                <p class="text-[11px] text-slate-400">Walking distance to conference venue, Wi-Fi, 24/7 power.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3">
+                <span class="text-[10px] font-bold text-blue-700 bg-blue-100 px-2 py-0.5 rounded uppercase">Sagamu Corridor</span>
+                <h3 class="text-base font-bold text-slate-900">Conference Hotel & Suites</h3>
+                <p class="text-xs text-slate-500">Sagamu Expressway, 10 mins to campus</p>
+                <div class="text-xs font-bold text-slate-800 pt-2">From ₦25,000 / night</div>
+                <p class="text-[11px] text-slate-400">Swimming pool, executive restaurant, airport shuttle.</p>
+            </div>
+
+            <div class="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-3">
+                <span class="text-[10px] font-bold text-purple-700 bg-purple-100 px-2 py-0.5 rounded uppercase">Luxury Option</span>
+                <h3 class="text-base font-bold text-slate-900">Royal Grand Resort</h3>
+                <p class="text-xs text-slate-500">Ogun State Tech Belt</p>
+                <div class="text-xs font-bold text-slate-800 pt-2">From ₦40,000 / night</div>
+                <p class="text-[11px] text-slate-400">Full luxury hospitality, spa, dedicated conference shuttle.</p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+{% endblock %}

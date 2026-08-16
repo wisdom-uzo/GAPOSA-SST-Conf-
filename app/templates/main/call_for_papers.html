@@ -1,0 +1,138 @@
+{% extends 'base.html' %}
+
+{% block title %}Call for Papers & Submission Guidelines | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Author Instructions
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            Call for Papers & Author Guidelines
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Submit your research for double-blind peer review and proceedings publication at ICONFST’26.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 space-y-16">
+    
+    <!-- Cutoff Alert Banner -->
+    <div class="bg-gradient-to-r from-amber-500 to-amber-600 rounded-3xl p-8 text-slate-950 shadow-xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div class="space-y-2">
+            <div class="flex items-center gap-2">
+                <span class="bg-slate-950 text-white text-[11px] font-black uppercase px-2.5 py-1 rounded">Crucial Deadline</span>
+                <span class="font-extrabold text-sm uppercase">Abstract Submission Cutoff</span>
+            </div>
+            <h2 class="text-2xl sm:text-4xl font-black font-heading">
+                31ST JULY, 2026
+            </h2>
+            <p class="text-xs sm:text-sm font-semibold opacity-90">
+                Authors must submit their abstracts and preliminary manuscripts on or before this date.
+            </p>
+        </div>
+        <a href="{{ url_for('submissions.submit') }}" class="shrink-0 px-8 py-4 bg-slate-950 hover:bg-slate-900 text-white font-extrabold text-xs sm:text-sm rounded-2xl shadow-xl transition-all hover:scale-105">
+            Submit Paper Now
+        </a>
+    </div>
+
+    <!-- Paper Guidelines Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-xl font-bold">
+                <i class="fa-regular fa-file-pdf"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 font-heading">i. Length of Paper</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Full manuscripts must not exceed <strong>12 pages</strong> in total, inclusive of all tables, diagrams, references, and appendices.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-arrows-up-down"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 font-heading">ii. Line Spacing</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                The body of the paper must be formatted using <strong>1.5 line spacing</strong>, with single line spacing for the abstract block.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-font"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 font-heading">iii. Typography</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                The entire document must be set in <strong>12pt Times New Roman</strong> typeface. Headings may be bolded with appropriate hierarchy.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-700 flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-quote-left"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 font-heading">iv. Referencing Style</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                All citations and reference lists must strictly adhere to the <strong>APA 7th Edition</strong> referencing standard.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-teal-100 text-teal-700 flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-align-left"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 font-heading">v. Abstract & Keywords</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                The abstract must be <strong>not more than 200 words</strong>, written with single line spacing, accompanied by <strong>3 to 5 keywords</strong>.
+            </p>
+        </div>
+
+        <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-3">
+            <div class="w-12 h-12 rounded-2xl bg-rose-100 text-rose-700 flex items-center justify-center text-xl font-bold">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+            <h3 class="text-base font-bold text-slate-900 font-heading">vi. Originality & Review</h3>
+            <p class="text-xs text-slate-600 leading-relaxed">
+                Papers must be original, non-plagiarized works. All submissions will be evaluated through double-blind peer review by our international editorial board.
+            </p>
+        </div>
+
+    </div>
+
+    <!-- Review Workflow Pipeline -->
+    <div class="bg-slate-900 rounded-3xl p-8 sm:p-12 text-white space-y-8">
+        <div class="text-center max-w-2xl mx-auto space-y-2">
+            <span class="text-xs font-bold text-amber-400 uppercase tracking-wider">Editorial Journey</span>
+            <h2 class="text-2xl sm:text-3xl font-extrabold text-white font-heading">Peer Review & Publication Process</h2>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 text-center">
+            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2">
+                <span class="w-8 h-8 rounded-full bg-emerald-600 text-white font-bold text-xs inline-flex items-center justify-center">1</span>
+                <h4 class="text-sm font-bold text-white">Online Submission</h4>
+                <p class="text-xs text-slate-400">Author submits abstract & PDF via conference portal.</p>
+            </div>
+            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2">
+                <span class="w-8 h-8 rounded-full bg-blue-600 text-white font-bold text-xs inline-flex items-center justify-center">2</span>
+                <h4 class="text-sm font-bold text-white">Double-Blind Review</h4>
+                <p class="text-xs text-slate-400">2 independent expert reviewers assess scientific rigor.</p>
+            </div>
+            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2">
+                <span class="w-8 h-8 rounded-full bg-amber-600 text-white font-bold text-xs inline-flex items-center justify-center">3</span>
+                <h4 class="text-sm font-bold text-white">Editorial Decision</h4>
+                <p class="text-xs text-slate-400">Accepted authors receive acceptance letter & remarks.</p>
+            </div>
+            <div class="p-4 bg-slate-800/80 rounded-2xl border border-slate-700 space-y-2">
+                <span class="w-8 h-8 rounded-full bg-teal-600 text-white font-bold text-xs inline-flex items-center justify-center">4</span>
+                <h4 class="text-sm font-bold text-white">Proceedings & Presentation</h4>
+                <p class="text-xs text-slate-400">Oral/poster presentation and journal indexing.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

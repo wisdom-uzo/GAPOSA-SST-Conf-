@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Keynote & Lead Paper Speakers | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-3">
+        <span class="text-xs uppercase font-extrabold tracking-widest text-amber-400 bg-amber-950/80 px-3 py-1 rounded-full border border-amber-800">
+            Conference Dignitaries
+        </span>
+        <h1 class="text-3xl sm:text-5xl font-black font-heading tracking-tight">
+            Keynote Speakers & Principal Officers
+        </h1>
+        <p class="text-xs sm:text-sm text-emerald-200 max-w-2xl mx-auto">
+            Distinguished scholars and leaders presenting visionary insights on bridging academia and industry.
+        </p>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        {% for speaker in speakers %}
+        <div class="bg-white rounded-3xl overflow-hidden border border-slate-200 shadow-md hover:shadow-2xl transition-all duration-300 flex flex-col justify-between">
+            <div>
+                <div class="h-72 relative bg-slate-900 overflow-hidden">
+                    <img src="{{ speaker.image_url }}" alt="{{ speaker.name }}" class="w-full h-full object-cover object-top hover:scale-105 transition-transform duration-500">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-transparent"></div>
+                    <div class="absolute bottom-4 left-4 right-4">
+                        <span class="inline-block text-xs font-black uppercase px-3 py-1 rounded-full bg-amber-400 text-slate-950 shadow-md">
+                            {{ speaker.title }}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="p-6 space-y-3">
+                    <h3 class="text-xl font-bold text-slate-900 font-heading">
+                        {{ speaker.name }}
+                    </h3>
+                    <p class="text-xs font-bold text-emerald-700">
+                        {{ speaker.designation }}
+                    </p>
+                    <p class="text-xs text-slate-500 font-medium">
+                        <i class="fa-solid fa-building-columns mr-1 text-slate-400"></i>
+                        {{ speaker.institution }}
+                    </p>
+                    <div class="pt-3 border-t border-slate-100">
+                        <p class="text-xs text-slate-600 leading-relaxed">
+                            {{ speaker.bio }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 pt-0">
+                <div class="bg-slate-50 p-3 rounded-xl border border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                    <span class="font-medium">Session Track:</span>
+                    <span class="font-bold text-emerald-700">Plenary Session</span>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+</div>
+{% endblock %}

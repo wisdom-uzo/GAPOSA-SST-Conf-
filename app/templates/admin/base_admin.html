@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-slate-100">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}ICONFST’26 Admin Suite{% endblock %} - Secretariat Portal</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            emerald: '#059669',
+                            dark: '#064e3b',
+                            light: '#10b981',
+                            gold: '#f59e0b',
+                            'gold-dark': '#d97706',
+                            navy: '#0f172a',
+                            royal: '#1e3a8a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+                        heading: ['"Outfit"', '"Plus Jakarta Sans"', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Font Awesome & Custom CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/custom.css') }}">
+    {% block extra_head %}{% endblock %}
+</head>
+<body class="h-full flex overflow-hidden font-sans text-slate-800 bg-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- =========================================================================
+         1. SIDEBAR (DESKTOP & MOBILE DRAWER)
+         ========================================================================= -->
+    <aside id="admin-sidebar" class="w-64 bg-slate-900 text-slate-300 flex flex-col shrink-0 border-r border-slate-800 transition-all duration-300 z-40 fixed inset-y-0 left-0 lg:static -translate-x-full lg:translate-x-0">
+        
+        <!-- Sidebar Brand Header -->
+        <div class="h-20 flex items-center px-6 bg-slate-950/80 border-b border-slate-800/80 gap-3">
+            <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-800 flex items-center justify-center text-white shadow-md shadow-emerald-900/50">
+                <i class="fa-solid fa-atom text-xl text-amber-300"></i>
+            </div>
+            <div class="overflow-hidden">
+                <div class="flex items-center gap-1.5">
+                    <span class="text-lg font-black text-white font-heading tracking-tight">ICONFST’26</span>
+                    <span class="text-[9px] font-black uppercase bg-emerald-950 text-emerald-300 border border-emerald-800/80 px-1.5 py-0.5 rounded">ADMIN</span>
+                </div>
+                <p class="text-[10px] text-slate-400 truncate">Gateway Poly Saapade</p>
+            </div>
+        </div>
+
+        <!-- Sidebar Navigation Menu -->
+        <nav class="flex-1 overflow-y-auto px-4 py-6 space-y-6 text-xs font-medium">
+            
+            <!-- Core Section -->
+            <div class="space-y-1">
+                <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Core</span>
+                <a href="{{ url_for('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.dashboard' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-gauge-high w-4 text-center"></i>
+                    <span>Dashboard Overview</span>
+                </a>
+                <a href="{{ url_for('admin.administrators') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.administrators' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-user-shield w-4 text-center"></i>
+                    <span>Administrators & Staff</span>
+                </a>
+            </div>
+
+            <!-- Management Section -->
+            <div class="space-y-1">
+                <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Conference Operations</span>
+                
+                <a href="{{ url_for('admin.registrations') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.registrations' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-id-card w-4 text-center"></i>
+                        <span>Registrations & Fees</span>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('admin.submissions') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint in ['admin.submissions', 'admin.review_submission'] else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-solid fa-book-bookmark w-4 text-center"></i>
+                        <span>Manuscripts & Review</span>
+                    </div>
+                </a>
+
+                <a href="{{ url_for('admin.messages') }}" class="flex items-center justify-between px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.messages' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <div class="flex items-center gap-3">
+                        <i class="fa-regular fa-envelope w-4 text-center"></i>
+                        <span>Contact Inquiries</span>
+                    </div>
+                </a>
+            </div>
+
+            <!-- Content CMS Section -->
+            <div class="space-y-1">
+                <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Content & Schedules</span>
+                
+                <a href="{{ url_for('admin.speakers') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.speakers' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-user-tie w-4 text-center"></i>
+                    <span>Dignitaries & Speakers</span>
+                </a>
+
+                <a href="{{ url_for('admin.subthemes') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.subthemes' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-layer-group w-4 text-center"></i>
+                    <span>45 Sub-Themes Catalog</span>
+                </a>
+
+                <a href="{{ url_for('admin.schedule_cms') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.schedule_cms' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-regular fa-calendar-days w-4 text-center"></i>
+                    <span>Program Schedule CMS</span>
+                </a>
+
+                <a href="{{ url_for('admin.announcements') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl transition-all {{ 'bg-emerald-600 text-white font-bold shadow-md shadow-emerald-900/30' if request.endpoint == 'admin.announcements' else 'text-slate-300 hover:bg-slate-800 hover:text-white' }}">
+                    <i class="fa-solid fa-bullhorn w-4 text-center"></i>
+                    <span>Broadcast Bulletins</span>
+                </a>
+            </div>
+
+            <!-- Data Exports -->
+            <div class="space-y-1">
+                <span class="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">Reports & Export</span>
+                
+                <a href="{{ url_for('admin.export_csv', data_type='registrations') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-emerald-400 transition-all">
+                    <i class="fa-solid fa-file-csv w-4 text-center text-emerald-500"></i>
+                    <span>Export Registrations (CSV)</span>
+                </a>
+
+                <a href="{{ url_for('admin.export_csv', data_type='submissions') }}" class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:bg-slate-800 hover:text-blue-400 transition-all">
+                    <i class="fa-solid fa-file-csv w-4 text-center text-blue-500"></i>
+                    <span>Export Manuscripts (CSV)</span>
+                </a>
+            </div>
+
+        </nav>
+
+        <!-- Sidebar Footer: Firestore Status & Public Link -->
+        <div class="p-4 bg-slate-950/60 border-t border-slate-800 space-y-3">
+            <div class="flex items-center justify-between text-[11px] text-slate-400 px-2">
+                <span class="flex items-center gap-1.5">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Cloud Firestore</span>
+                </span>
+                <span class="text-[10px] font-mono text-emerald-400 font-bold">Live Sync</span>
+            </div>
+
+            <div class="pt-1 flex items-center justify-between gap-2">
+                <a href="{{ url_for('main.index') }}" target="_blank" class="flex-1 py-2 px-3 bg-slate-800 hover:bg-slate-700 text-white rounded-xl text-center text-[11px] font-semibold transition-colors flex items-center justify-center gap-1.5">
+                    <i class="fa-solid fa-globe text-amber-300"></i>
+                    <span>Public Site</span>
+                </a>
+                <a href="{{ url_for('auth.logout') }}" class="py-2 px-3 bg-rose-950/60 hover:bg-rose-900 text-rose-300 border border-rose-800/60 rounded-xl text-center text-[11px] font-semibold transition-colors" title="Sign Out">
+                    <i class="fa-solid fa-power-off"></i>
+                </a>
+            </div>
+        </div>
+
+    </aside>
+
+    <!-- Mobile Sidebar Backdrop Overlay -->
+    <div id="admin-backdrop" class="fixed inset-0 bg-slate-950/70 z-30 hidden lg:hidden"></div>
+
+    <!-- =========================================================================
+         2. MAIN CONTENT WRAPPER WITH TOP HEADER
+         ========================================================================= -->
+    <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+        
+        <!-- Top Admin Header -->
+        <header class="h-20 bg-white border-b border-slate-200/80 px-6 sm:px-8 flex items-center justify-between shrink-0 z-10 shadow-sm">
+            
+            <!-- Left: Mobile Toggle & Page Title -->
+            <div class="flex items-center gap-4">
+                <button id="admin-sidebar-toggle" type="button" class="p-2 rounded-xl text-slate-600 hover:bg-slate-100 lg:hidden focus:outline-none" aria-label="Toggle admin sidebar">
+                    <i class="fa-solid fa-bars-staggered text-lg"></i>
+                </button>
+
+                <div>
+                    <div class="flex items-center gap-2">
+                        <h1 class="text-lg sm:text-xl font-bold text-slate-900 font-heading">
+                            {% block page_title %}Admin Control Panel{% endblock %}
+                        </h1>
+                    </div>
+                    <p class="text-xs text-slate-500 hidden sm:block">
+                        {% block page_subtitle %}International Conference on Science & Technology (ICONFST’26){% endblock %}
+                    </p>
+                </div>
+            </div>
+
+            <!-- Right: Status Badge & Admin Profile -->
+            <div class="flex items-center gap-4">
+                
+                <div class="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-bold">
+                    <i class="fa-solid fa-shield-halved text-emerald-600"></i>
+                    <span>Secretariat Authenticated</span>
+                </div>
+
+                <!-- Admin User Info -->
+                <div class="flex items-center gap-3 pl-3 border-l border-slate-200">
+                    <div class="w-10 h-10 rounded-full bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-md">
+                        AD
+                    </div>
+                    <div class="hidden md:block text-left text-xs">
+                        <p class="font-bold text-slate-900">{{ current_user.full_name if current_user else 'Administrator' }}</p>
+                        <p class="text-[11px] text-slate-500">{{ current_user.email if current_user else 'admin@gaposastconf.org' }}</p>
+                    </div>
+                </div>
+
+            </div>
+
+        </header>
+
+        <!-- Admin Main Content Scrollable Area -->
+        <main class="flex-1 overflow-y-auto p-6 sm:p-8 space-y-6">
+            
+            <!-- Flash Message Alerts -->
+            {% include 'components/flash_messages.html' %}
+
+            <!-- Page Body -->
+            {% block content %}{% endblock %}
+
+        </main>
+    </div>
+
+    <!-- Admin Interactive Script for Mobile Sidebar -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const sidebar = document.getElementById('admin-sidebar');
+            const backdrop = document.getElementById('admin-backdrop');
+            const toggleBtn = document.getElementById('admin-sidebar-toggle');
+
+            const toggleSidebar = () => {
+                const isClosed = sidebar.classList.contains('-translate-x-full');
+                if (isClosed) {
+                    sidebar.classList.remove('-translate-x-full');
+                    backdrop.classList.remove('hidden');
+                } else {
+                    sidebar.classList.add('-translate-x-full');
+                    backdrop.classList.add('hidden');
+                }
+            };
+
+            if (toggleBtn) toggleBtn.addEventListener('click', toggleSidebar);
+            if (backdrop) backdrop.addEventListener('click', toggleSidebar);
+        });
+    </script>
+    {% block extra_scripts %}{% endblock %}
+</body>
+</html>

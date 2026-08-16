@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}My Registrations | ICONFST’26{% endblock %}
+
+{% block content %}
+<div class="bg-gradient-to-r from-slate-900 via-brand-dark to-slate-900 text-white py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div>
+            <h1 class="text-2xl sm:text-3xl font-black font-heading">My Conference Registrations</h1>
+            <p class="text-xs text-emerald-200 mt-1">Delegate passes, fee receipts, and payment verification</p>
+        </div>
+        <a href="{{ url_for('registration.register_conference') }}" class="px-5 py-2.5 bg-amber-400 hover:bg-amber-500 text-slate-950 text-xs font-bold rounded-xl shadow-md transition-all">
+            + New Registration
+        </a>
+    </div>
+</div>
+
+<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <div class="bg-white rounded-3xl p-8 border border-slate-200 shadow-sm space-y-6">
+        {% if registrations %}
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+                <thead>
+                    <tr class="bg-slate-50 text-slate-500 font-bold uppercase">
+                        <th class="py-3 px-4 rounded-l-xl">Registration ID</th>
+                        <th class="py-3 px-4">Delegate Name</th>
+                        <th class="py-3 px-4">Category</th>
+                        <th class="py-3 px-4">Mode</th>
+                        <th class="py-3 px-4">Fee Amount</th>
+                        <th class="py-3 px-4">Status</th>
+                        <th class="py-3 px-4 rounded-r-xl text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100">
+                    {% for reg in registrations %}
+                    <tr class="hover:bg-slate-50/80">
+                        <td class="py-3 px-4 font-mono font-bold text-slate-900">{{ reg.id }}</td>
+                        <td class="py-3 px-4 font-semibold text-slate-800">{{ reg.title }} {{ reg.full_name }}</td>
+                        <td class="py-3 px-4 text-slate-600">{{ reg.category_name }}</td>
+                        <td class="py-3 px-4 font-bold uppercase">{{ reg.mode }}</td>
+                        <td class="py-3 px-4 font-black">{{ reg.fee_amount|format_currency(reg.currency) }}</td>
+                        <td class="py-3 px-4">
+                            <span class="inline-block px-2.5 py-1 rounded-full text-[11px] font-bold border {{ reg.payment_status|status_badge_class }}">
+                                {{ reg.payment_status }}
+                            </span>
+                        </td>
+                        <td class="py-3 px-4 text-right space-x-2">
+                            <a href="{{ url_for('registration.confirmation', reg_id=reg.id) }}" class="text-emerald-700 font-bold hover:underline">Pass</a>
+                            <a href="{{ url_for('registration.slip', reg_id=reg.id) }}" target="_blank" class="text-slate-600 hover:text-slate-900 font-semibold">Slip</a>
+                            {% if reg.payment_status == 'Pending' %}
+                            <a href="{{ url_for('registration.payment', reg_id=reg.id) }}" class="text-amber-600 font-bold hover:underline">Pay</a>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <div class="p-8 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-200">
+            <p class="text-xs text-slate-500">No registrations found under your account.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

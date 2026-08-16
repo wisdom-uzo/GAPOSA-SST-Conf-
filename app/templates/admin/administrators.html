@@ -1,0 +1,260 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Administrators & Secretariat Staff | ICONFST’26 Admin{% endblock %}
+{% block page_title %}Administrators & Secretariat Staff{% endblock %}
+{% block page_subtitle %}Manage administrative users and permissions in Google Cloud Firestore{% endblock %}
+
+{% block content %}
+<div class="space-y-6">
+    
+    <!-- Top Action Bar -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-sm font-bold text-slate-900 font-heading">Authorized Secretariat Administrators ({{ administrators|length }})</h2>
+            <p class="text-xs text-slate-500">Every administrator document is stored and authenticated directly in Cloud Firestore</p>
+        </div>
+
+        <button onclick="document.getElementById('add-admin-modal').classList.remove('hidden')" class="py-2.5 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-xs font-bold transition-all shadow-sm flex items-center gap-2">
+            <i class="fa-solid fa-user-plus"></i>
+            <span>Add New Administrator</span>
+        </button>
+    </div>
+
+    <!-- Administrators Data Table -->
+    <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse text-xs">
+                <thead class="bg-slate-50 border-b border-slate-200 text-slate-500 font-semibold uppercase text-[10px] tracking-wider">
+                    <tr>
+                        <th class="py-3.5 px-4">Administrator</th>
+                        <th class="py-3.5 px-4">Email & Phone</th>
+                        <th class="py-3.5 px-4">Affiliation / Title</th>
+                        <th class="py-3.5 px-4">Role / Cloud Storage</th>
+                        <th class="py-3.5 px-4">Created Date</th>
+                        <th class="py-3.5 px-4 text-right">Actions</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                    {% for admin_user in administrators %}
+                    <tr class="hover:bg-slate-50 transition-colors">
+                        <!-- Name & Avatar -->
+                        <td class="py-3.5 px-4">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 rounded-xl bg-slate-900 text-white flex items-center justify-center font-bold text-xs shadow-sm">
+                                    {{ admin_user.full_name[:2]|upper if admin_user.full_name else 'AD' }}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-900 flex items-center gap-1.5">
+                                        <span>{{ admin_user.title or 'Admin' }} {{ admin_user.full_name }}</span>
+                                        {% if current_user and current_user.id == admin_user.id %}
+                                        <span class="text-[9px] bg-emerald-100 text-emerald-800 font-bold px-1.5 py-0.2 rounded">YOU</span>
+                                        {% endif %}
+                                    </p>
+                                    <span class="text-[10px] text-slate-400 font-mono">{{ admin_user.id }}</span>
+                                </div>
+                            </div>
+                        </td>
+
+                        <!-- Email & Phone -->
+                        <td class="py-3.5 px-4">
+                            <p class="text-slate-900 font-semibold">{{ admin_user.email }}</p>
+                            <p class="text-[11px] text-slate-500">{{ admin_user.phone or 'No phone logged' }}</p>
+                        </td>
+
+                        <!-- Affiliation & Title -->
+                        <td class="py-3.5 px-4">
+                            <p class="text-slate-800 font-semibold truncate max-w-xs">{{ admin_user.affiliation or 'The Gateway (ICT) Polytechnic Saapade' }}</p>
+                            <p class="text-[11px] text-slate-500">{{ admin_user.title or 'Secretariat' }}</p>
+                        </td>
+
+                        <!-- Role Badge -->
+                        <td class="py-3.5 px-4">
+                            <span class="inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200">
+                                <span class="w-1.5 h-1.5 rounded-full bg-emerald-600"></span>
+                                <span>Firestore Admin</span>
+                            </span>
+                        </td>
+
+                        <!-- Created Date -->
+                        <td class="py-3.5 px-4 text-slate-500 text-[11px]">
+                            {{ admin_user.created_at|format_date }}
+                        </td>
+
+                        <!-- Action Buttons -->
+                        <td class="py-3.5 px-4 text-right space-x-1">
+                            <!-- Edit Button -->
+                            <button onclick="openEditModal('{{ admin_user.id }}', '{{ admin_user.full_name|escape }}', '{{ admin_user.email|escape }}', '{{ admin_user.title|default('Administrator', true)|escape }}', '{{ admin_user.phone|default('', true)|escape }}', '{{ admin_user.affiliation|default('', true)|escape }}')" class="py-1 px-2.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-lg font-bold text-[11px] inline-flex items-center gap-1 transition-colors">
+                                <i class="fa-solid fa-pen-to-square text-[10px]"></i> Edit
+                            </button>
+
+                            <!-- Delete Button (Disabled for Self) -->
+                            {% if current_user and current_user.id != admin_user.id %}
+                            <form action="{{ url_for('admin.delete_administrator', user_id=admin_user.id) }}" method="POST" class="inline-block" onsubmit="return confirm('Revoke administrator access for {{ admin_user.full_name }}?');">
+                                <button type="submit" class="py-1 px-2.5 bg-rose-50 hover:bg-rose-100 text-rose-700 rounded-lg font-bold text-[11px] inline-flex items-center gap-1 transition-colors" title="Delete Administrator">
+                                    <i class="fa-regular fa-trash-can text-[10px]"></i> Delete
+                                </button>
+                            </form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="py-12 text-center text-slate-400">
+                            No administrator accounts found. Add one using the button above.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- =========================================================================
+     MODAL: ADD NEW ADMINISTRATOR
+     ========================================================================= -->
+<div id="add-admin-modal" class="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 border border-slate-200 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-base font-bold text-slate-900 font-heading">Add New Administrator</h3>
+                <p class="text-xs text-slate-500">Create an authorized secretariat account in Cloud Firestore</p>
+            </div>
+            <button onclick="document.getElementById('add-admin-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <form action="{{ url_for('admin.add_administrator') }}" method="POST" class="space-y-4">
+            <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-1">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Title</label>
+                    <select name="title" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50 font-bold">
+                        <option value="Dr.">Dr.</option>
+                        <option value="Prof.">Prof.</option>
+                        <option value="Engr.">Engr.</option>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Ms.">Ms.</option>
+                        <option value="Administrator" selected>Administrator</option>
+                    </select>
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name <span class="text-rose-500">*</span></label>
+                    <input type="text" name="full_name" required placeholder="e.g. John Doe" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Email Address <span class="text-rose-500">*</span></label>
+                <input type="email" name="email" required placeholder="e.g. admin.new@gaposastconf.org" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Password <span class="text-rose-500">*</span></label>
+                <input type="password" name="password" required minlength="6" placeholder="Strong password..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                <input type="tel" name="phone" placeholder="e.g. +2348012345678" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Institution / Affiliation</label>
+                <input type="text" name="affiliation" value="The Gateway (ICT) Polytechnic, Saapade" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button type="button" onclick="document.getElementById('add-admin-modal').classList.add('hidden')" class="px-4 py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-200 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">
+                    Create Administrator
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- =========================================================================
+     MODAL: EDIT ADMINISTRATOR
+     ========================================================================= -->
+<div id="edit-admin-modal" class="fixed inset-0 bg-slate-950/70 z-50 flex items-center justify-center p-4 hidden">
+    <div class="bg-white rounded-3xl max-w-lg w-full p-8 border border-slate-200 shadow-2xl space-y-6">
+        <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+            <div>
+                <h3 class="text-base font-bold text-slate-900 font-heading">Edit Administrator Profile</h3>
+                <p class="text-xs text-slate-500">Update account credentials and details in Cloud Firestore</p>
+            </div>
+            <button onclick="document.getElementById('edit-admin-modal').classList.add('hidden')" class="text-slate-400 hover:text-slate-700">
+                <i class="fa-solid fa-xmark text-lg"></i>
+            </button>
+        </div>
+
+        <form id="edit-admin-form" method="POST" action="" class="space-y-4">
+            <div class="grid grid-cols-3 gap-3">
+                <div class="col-span-1">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Title</label>
+                    <select id="edit-admin-title" name="title" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50 font-bold">
+                        <option value="Dr.">Dr.</option>
+                        <option value="Prof.">Prof.</option>
+                        <option value="Engr.">Engr.</option>
+                        <option value="Mr.">Mr.</option>
+                        <option value="Mrs.">Mrs.</option>
+                        <option value="Ms.">Ms.</option>
+                        <option value="Administrator">Administrator</option>
+                    </select>
+                </div>
+                <div class="col-span-2">
+                    <label class="block text-xs font-bold text-slate-700 mb-1">Full Name <span class="text-rose-500">*</span></label>
+                    <input type="text" id="edit-admin-name" name="full_name" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Email Address <span class="text-rose-500">*</span></label>
+                <input type="email" id="edit-admin-email" name="email" required class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">New Password <span class="text-slate-400 font-normal">(Leave blank to keep current)</span></label>
+                <input type="password" name="new_password" minlength="6" placeholder="Enter new password if changing..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Phone Number</label>
+                <input type="tel" id="edit-admin-phone" name="phone" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Institution / Affiliation</label>
+                <input type="text" id="edit-admin-affiliation" name="affiliation" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div class="flex items-center justify-end gap-3 pt-3 border-t border-slate-100">
+                <button type="button" onclick="document.getElementById('edit-admin-modal').classList.add('hidden')" class="px-4 py-2.5 bg-slate-100 text-slate-700 font-bold text-xs rounded-xl hover:bg-slate-200 transition-colors">
+                    Cancel
+                </button>
+                <button type="submit" class="px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl shadow-md transition-all">
+                    Save Changes
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+    function openEditModal(userId, fullName, email, title, phone, affiliation) {
+        const form = document.getElementById('edit-admin-form');
+        form.action = "/admin/administrators/" + userId + "/edit";
+        document.getElementById('edit-admin-name').value = fullName;
+        document.getElementById('edit-admin-email').value = email;
+        document.getElementById('edit-admin-title').value = title;
+        document.getElementById('edit-admin-phone').value = phone;
+        document.getElementById('edit-admin-affiliation').value = affiliation;
+        document.getElementById('edit-admin-modal').classList.remove('hidden');
+    }
+</script>
+{% endblock %}

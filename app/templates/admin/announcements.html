@@ -1,0 +1,90 @@
+{% extends 'admin/base_admin.html' %}
+
+{% block title %}Broadcast Bulletins & News | ICONFST’26 Admin{% endblock %}
+{% block page_title %}Announcements & Bulletins CMS{% endblock %}
+{% block page_subtitle %}Post conference alerts, deadline reminders, and special instructions for participants{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    
+    <!-- Post Announcement Form -->
+    <div class="bg-white rounded-3xl p-6 border border-slate-200 shadow-sm space-y-6">
+        <div class="border-b border-slate-100 pb-3">
+            <h2 class="text-sm font-bold text-slate-900 font-heading">Publish Broadcast Bulletin</h2>
+            <p class="text-[11px] text-slate-500">Post news to the public announcement board</p>
+        </div>
+
+        <form action="{{ url_for('admin.announcements') }}" method="POST" class="space-y-4">
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Bulletin Headline / Title <span class="text-rose-500">*</span></label>
+                <input type="text" name="title" required placeholder="e.g. Call for Papers Deadline Reminder: 31st July" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Category / Tag</label>
+                <select name="category" class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50">
+                    <option value="General">General Notice</option>
+                    <option value="Call for Papers">Call for Papers</option>
+                    <option value="Registration">Registration & Fees</option>
+                    <option value="Schedule">Schedule & Keynotes</option>
+                    <option value="Venue & Logistics">Venue & Logistics</option>
+                </select>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-slate-700 mb-1">Bulletin Content <span class="text-rose-500">*</span></label>
+                <textarea name="content" rows="4" required placeholder="Full message text..." class="w-full px-3 py-2 rounded-xl border border-slate-300 text-xs bg-slate-50"></textarea>
+            </div>
+
+            <div>
+                <label class="flex items-center gap-2 text-xs text-slate-700 font-semibold cursor-pointer">
+                    <input type="checkbox" name="is_pinned" class="rounded text-emerald-600 focus:ring-emerald-500">
+                    <span>Pin this announcement at top of noticeboard</span>
+                </label>
+            </div>
+
+            <button type="submit" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md transition-all">
+                Publish Bulletin
+            </button>
+        </form>
+    </div>
+
+    <!-- Published Bulletins List -->
+    <div class="lg:col-span-2 space-y-4">
+        <h2 class="text-sm font-bold text-slate-900 font-heading">Published Bulletins ({{ announcements|length }})</h2>
+        
+        <div class="space-y-3">
+            {% for ann in announcements %}
+            <div class="bg-white rounded-3xl p-5 border border-slate-200 shadow-sm flex items-start justify-between gap-4 group">
+                <div class="space-y-1.5 text-xs">
+                    <div class="flex items-center gap-2">
+                        <span class="inline-block text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200">
+                            {{ ann.category }}
+                        </span>
+                        {% if ann.is_pinned %}
+                        <span class="inline-block text-[9px] font-bold uppercase px-2 py-0.5 rounded bg-amber-50 text-amber-800 border border-amber-200">
+                            <i class="fa-solid fa-thumbtack mr-1"></i> Pinned
+                        </span>
+                        {% endif %}
+                        <span class="text-[10px] text-slate-400 font-mono">{{ ann.created_at|format_date }}</span>
+                    </div>
+                    <h3 class="text-sm font-bold text-slate-900">{{ ann.title }}</h3>
+                    <p class="text-slate-600 leading-relaxed text-xs">{{ ann.content }}</p>
+                </div>
+                
+                <form action="{{ url_for('admin.delete_announcement', ann_id=ann.id) }}" method="POST" onsubmit="return confirm('Delete this announcement?');">
+                    <button type="submit" class="text-rose-600 hover:text-rose-800 text-xs font-bold p-1 rounded hover:bg-rose-50" title="Delete Announcement">
+                        <i class="fa-regular fa-trash-can"></i>
+                    </button>
+                </form>
+            </div>
+            {% else %}
+            <div class="py-12 text-center text-slate-400 bg-white rounded-3xl border border-slate-200">
+                No bulletins published yet.
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+</div>
+{% endblock %}
