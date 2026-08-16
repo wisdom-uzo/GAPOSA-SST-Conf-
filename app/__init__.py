@@ -10,12 +10,15 @@ def create_app(config_class=Config):
     # Initialize Firebase service
     firebase_service.init_app(app)
 
-    # Ensure upload folder exists
+    # Ensure upload folder exists safely
     upload_folder = app.config.get('LOCAL_UPLOAD_FOLDER')
     if upload_folder:
-        os.makedirs(os.path.join(upload_folder, 'papers'), exist_ok=True)
-        os.makedirs(os.path.join(upload_folder, 'receipts'), exist_ok=True)
-        os.makedirs(os.path.join(upload_folder, 'speakers'), exist_ok=True)
+        try:
+            os.makedirs(os.path.join(upload_folder, 'papers'), exist_ok=True)
+            os.makedirs(os.path.join(upload_folder, 'receipts'), exist_ok=True)
+            os.makedirs(os.path.join(upload_folder, 'speakers'), exist_ok=True)
+        except OSError:
+            pass
 
     # Register Blueprints
     from app.blueprints.main.routes import main_bp

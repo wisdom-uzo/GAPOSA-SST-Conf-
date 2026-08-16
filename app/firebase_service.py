@@ -166,12 +166,18 @@ class LocalFirebaseSimulator:
     """
     def __init__(self, data_dir=None):
         if not data_dir:
-            base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-            data_dir = os.path.join(base_dir, 'data_store')
+            if os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+                data_dir = os.path.join('/tmp', 'data_store')
+            else:
+                base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+                data_dir = os.path.join(base_dir, 'data_store')
         self.data_dir = data_dir
-        os.makedirs(self.data_dir, exist_ok=True)
-        self.upload_dir = os.path.join(self.data_dir, 'uploads')
-        os.makedirs(self.upload_dir, exist_ok=True)
+        try:
+            os.makedirs(self.data_dir, exist_ok=True)
+            self.upload_dir = os.path.join(self.data_dir, 'uploads')
+            os.makedirs(self.upload_dir, exist_ok=True)
+        except OSError:
+            self.upload_dir = os.path.join('/tmp', 'uploads')
 
     def _get_coll_file(self, collection_name):
         return os.path.join(self.data_dir, f"{collection_name}.json")

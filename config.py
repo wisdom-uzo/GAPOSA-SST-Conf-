@@ -127,7 +127,10 @@ class Config:
     FIREBASE_DATABASE_URL = os.environ.get('FIREBASE_DATABASE_URL', '')
     
     # Fallback / Local Storage directory for local uploads when Firebase Storage is not active
-    LOCAL_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app', 'static', 'uploads')
+    if os.environ.get('VERCEL') or os.environ.get('AWS_LAMBDA_FUNCTION_NAME'):
+        LOCAL_UPLOAD_FOLDER = os.path.join('/tmp', 'uploads')
+    else:
+        LOCAL_UPLOAD_FOLDER = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'app', 'static', 'uploads')
 
     @classmethod
     def get_current_local_fee_tier(cls, check_date=None):
