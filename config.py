@@ -5,11 +5,17 @@ from dotenv import load_dotenv
 # Load environment variables from .env if present
 load_dotenv()
 
+def _safe_int_env(key, default):
+    val = os.environ.get(key)
+    if not val or not str(val).strip().isdigit():
+        return default
+    return int(val)
+
 class Config:
     """Base application configuration."""
-    SECRET_KEY = os.environ.get('SECRET_KEY', 'iconfst26-super-secret-key-gaposa-2026-prod')
-    DEBUG = os.environ.get('FLASK_DEBUG', 'False').lower() in ('true', '1', 't')
-    PORT = int(os.environ.get('PORT', 5000))
+    SECRET_KEY = os.environ.get('SECRET_KEY', 'iconfst26-super-secret-key-gaposa-2026-prod') or 'iconfst26-super-secret-key-gaposa-2026-prod'
+    DEBUG = (os.environ.get('FLASK_DEBUG') or 'False').lower() in ('true', '1', 't')
+    PORT = _safe_int_env('PORT', 5000)
     MAX_CONTENT_LENGTH = 16 * 1024 * 1024  # 16 MB max upload size
     UPLOAD_EXTENSIONS = ['.pdf', '.doc', '.docx', '.png', '.jpg', '.jpeg']
 
